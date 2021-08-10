@@ -4,7 +4,7 @@ local function findInList(list, searchString)
     if searchString == nil then
         return nil
     end
-    
+
     for _, sName in pairs(list) do
         if string.find(sName, searchString) then
             return sName
@@ -43,7 +43,8 @@ end
 
 local function removeEmptyCup()
     local coffeeMakerCups = coffeeMaker.getItemMeta(2)
-    if coffeeMakerCups.count < coffeeMakerCups.maxCount then
+    if coffeeMakerCups == nil
+            or coffeeMakerCups.count < coffeeMakerCups.maxCount then
         playerChest.pushItems(coffeeMakerName, coffeeSlot, nil, 2)
     else
         playerChest.pushItems(bufferChest, coffeeSlot)
