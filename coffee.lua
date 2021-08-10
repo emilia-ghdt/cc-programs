@@ -1,57 +1,89 @@
 tArgs = {...}
+
+local function findInList(list, searchString)
+    for _, sName in pairs(list) do
+        if string.find(sName, searchString) then
+            return sName
+        end
+    end
+end
+
 coffeeSlot = tArgs[1] or 1
 
-if not tArgs[2] then
-    for _, sName in pairs(peripheral.getNames()) do
-        if string.find(sName, "xu2:tileplayerchest_") then
-            playerChestName = sName
-        end
-    end
-else
-    playerChestName = tArgs[2]
-end
-playerChest = peripheral.wrap(playerChestName)
+playerChest = tArgs[2]
+        or findInList(peripheral.getNames(), "xu2:tileplayerchest")
+playerChest = peripheral.wrap(playerChest)
 
-if not tArgs[3] then
-    for _, sName in pairs(peripheral.getNames()) do
-        if string.find(sName, "actuallyadditions:giantchest_") then
-            emptyCupChest = sName
-            break
-        end
+bufferChest = tArgs[3]
+        or findInList(peripheral.getNames(), "minecraft:chest")
+        or findInList(peripheral.getNames(), "actuallyadditions:giantchest")
+
+coffeeMakerName = tArgs[4]
+        or findInList(peripheral.getNames(), "actuallyadditions:coffeemachine")
+coffeeMaker = peripheral.wrap(coffeeMakerName)
+
+thisTurtle = tArgs[5]
+        or findInList(playerChest.getTransferLocations(), "turtle")
+
+local function checkForEmptyCup()
+    local currentItem = playerChest.getItemMeta(coffeeSlot)
+    if currentItem ~= nil
+      and currentItem.name == "actuallyadditions:item_misc"
+      and currentItem.damage == 14 then
+        return true
     end
-else
-    emptyCupChest = tArgs[3]
+    return false
 end
 
-if not tArgs[4] then
-    for _, sName in pairs(playerChest.getTransferLocations()) do
-        if string.find(sName, "turtle_") then
-            this = sName
+local function removeEmptyCup()
+    local coffeeMakerCups = coffeeMaker.getItemMeta(2)
+    if coffeeMakerCups.count < coffeeMakerCups.maxCount then
+        playerChest.pushItems(coffeeMakerName, coffeeSlot, nil, 2)
+    else
+        playerChest.pushItems(bufferChest, coffeeSlot)
+    end
+end
+
+local function supplyFullCup(turtleCoffeeSlot)
+    playerChest.pullItems(thisTurtle, turtleCoffeeSlot)
+end
+
+local function getCoffeeFromMaker()
+    if coffeeMaker.getItemMeta(3) then
+        coffeeMaker.pushItems(turtle, 3)
+        return true
+    end
+    return false
+end
+
+local function checkTurtleForCoffee()
+    local turtleCoffeeSlot = nil
+    local coffeeCount = 0
+    for i = 1, 16 do
+        local currentItem = turtle.getItemDetail(i)
+        if currentItem ~= nil
+          and currentItem.name == "actuallyadditions:item_coffee" then
+            if coffeeCount == nil then
+                turtleCoffeeSlot = i
+            end
+            coffeeCount = coffeeCount + 1
         end
     end
-else
-    this = tArgs[4]
+    return turtleCoffeeSlot, coffeeCount
 end
 
 turtle.select(1)
 
 while true do
-    local turtleCoffeeSlot = nil
-    for i = 1, 16 do
-        local currentItem = turtle.getItemDetail(i)
-        if currentItem ~= nil
-          and currentItem.name == "actuallyadditions:item_coffee" then
-            turtleCoffeeSlot = i
-            break
-        end
+    local turtleCoffeeSlot, coffeeCount = checkTurtleForCoffee()
+    if coffeeCount < 16 then
+        getCoffeeFromMaker()
     end
     if turtleCoffeeSlot then
-        local currentItem = playerChest.getItemMeta(coffeeSlot)
-        if currentItem ~= nil
-          and currentItem.name == "actuallyadditions:item_misc"
-          and currentItem.damage == 14 then
-            playerChest.pushItems(emptyCupChest, coffeeSlot)
-            playerChest.pullItems(this, turtleCoffeeSlot)
+        if checkForEmptyCup() then
+            removeEmptyCup()
+            supplyFullCup(turtleCoffeeSlot)
+            getCoffeeFromMaker()
         end
     else
         os.sleep(0.1)
