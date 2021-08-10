@@ -25,6 +25,8 @@ coffeeMaker = peripheral.wrap(coffeeMakerName)
 thisTurtle = tArgs[5]
         or findInList(playerChest.getTransferLocations(), "turtle")
 
+bDebug = tArgs[6] or false
+
 local function checkForEmptyCup()
     local currentItem = playerChest.getItemMeta(coffeeSlot)
     if currentItem ~= nil
@@ -75,17 +77,40 @@ end
 turtle.select(1)
 
 while true do
+    if bDebug then
+        print("Checking turtle inventory")
+    end
     local turtleCoffeeSlot, coffeeCount = checkTurtleForCoffee()
     if coffeeCount < 16 then
+        if bDebug then
+            print("Free slot detected, retrieving coffee from coffee maker...")
+        end
         getCoffeeFromMaker()
     end
     if turtleCoffeeSlot then
+        if bDebug then
+            print("Coffee present in turtle inventory")
+            print("Detecting empty cup...")
+        end
         if checkForEmptyCup() then
+            if bDebug then
+                print("Empty cup detected!")
+                print("Removing empty cup...")
+            end
             removeEmptyCup()
+            if bDebug then
+                print("Inserting full cup...")
+            end
             supplyFullCup(turtleCoffeeSlot)
+            if bDebug then
+                print("Refilling inventory from Coffee Maker...")
+            end
             getCoffeeFromMaker()
         end
     else
+        if bDebug then
+            print("No coffee found")
+        end
         os.sleep(0.1)
     end
 end
