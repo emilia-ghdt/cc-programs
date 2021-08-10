@@ -1,6 +1,10 @@
 local tArgs = {...}
 
 local function findInList(list, searchString)
+    if searchString == nil then
+        return nil
+    end
+    
     for _, sName in pairs(list) do
         if string.find(sName, searchString) then
             return sName
