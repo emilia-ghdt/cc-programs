@@ -50,7 +50,7 @@ end
 
 local function getCoffeeFromMaker()
     if coffeeMaker.getItemMeta(3) then
-        coffeeMaker.pushItems(turtle, 3)
+        coffeeMaker.pushItems(thisTurtle, 3)
         return true
     end
     return false
