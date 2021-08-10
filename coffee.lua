@@ -22,9 +22,10 @@ local playerChest = findInList(peripheral.getNames(), tArgs[2])
         or findInList(peripheral.getNames(), "xu2:tileplayerchest")
 local playerChest = peripheral.wrap(playerChest)
 
-local bufferChest = findInList(peripheral.getNames(), tArgs[3])
+local bufferChestName = findInList(peripheral.getNames(), tArgs[3])
         or findInList(peripheral.getNames(), "minecraft:chest")
         or findInList(peripheral.getNames(), "actuallyadditions:giantchest")
+local bufferChest = peripheral.wrap(bufferChestName)
 
 local coffeeMakerName = findInList(peripheral.getNames(), tArgs[4])
         or findInList(peripheral.getNames(), "actuallyadditions:coffeemachine")
@@ -51,7 +52,7 @@ local function removeEmptyCup()
             or coffeeMakerCups.count < coffeeMakerCups.maxCount then
         playerChest.pushItems(coffeeMakerName, coffeeSlot, nil, 2)
     else
-        playerChest.pushItems(bufferChest, coffeeSlot)
+        playerChest.pushItems(bufferChestName, coffeeSlot)
     end
 end
 
