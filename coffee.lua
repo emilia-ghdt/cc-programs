@@ -8,21 +8,21 @@ local function findInList(list, searchString)
     end
 end
 
-local coffeeSlot = tArgs[1] or 1
+local coffeeSlot = tonumber(tArgs[1]) or 1
 
-local playerChest = tArgs[2]
+local playerChest = findInList(peripheral.getNames(), tArgs[2])
         or findInList(peripheral.getNames(), "xu2:tileplayerchest")
 local playerChest = peripheral.wrap(playerChest)
 
-local bufferChest = tArgs[3]
+local bufferChest = findInList(peripheral.getNames(), tArgs[3])
         or findInList(peripheral.getNames(), "minecraft:chest")
         or findInList(peripheral.getNames(), "actuallyadditions:giantchest")
 
-local coffeeMakerName = tArgs[4]
+local coffeeMakerName = findInList(peripheral.getNames(), tArgs[4])
         or findInList(peripheral.getNames(), "actuallyadditions:coffeemachine")
 local coffeeMaker = peripheral.wrap(coffeeMakerName)
 
-local thisTurtle = tArgs[5]
+local thisTurtle = findInList(playerChest.getTransferLocations(), tArgs[5])
         or findInList(playerChest.getTransferLocations(), "turtle")
 
 local bDebug = tArgs[6] or false
@@ -65,7 +65,7 @@ local function checkTurtleForCoffee()
         local currentItem = turtle.getItemDetail(i)
         if currentItem ~= nil
           and currentItem.name == "actuallyadditions:item_coffee" then
-            if coffeeCount == nil then
+            if coffeeCount == 0 then
                 turtleCoffeeSlot = i
             end
             coffeeCount = coffeeCount + 1
