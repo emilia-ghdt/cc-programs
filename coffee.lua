@@ -1,4 +1,4 @@
-tArgs = {...}
+local tArgs = {...}
 
 local function findInList(list, searchString)
     for _, sName in pairs(list) do
@@ -8,24 +8,24 @@ local function findInList(list, searchString)
     end
 end
 
-coffeeSlot = tArgs[1] or 1
+local coffeeSlot = tArgs[1] or 1
 
-playerChest = tArgs[2]
+local playerChest = tArgs[2]
         or findInList(peripheral.getNames(), "xu2:tileplayerchest")
-playerChest = peripheral.wrap(playerChest)
+local playerChest = peripheral.wrap(playerChest)
 
-bufferChest = tArgs[3]
+local bufferChest = tArgs[3]
         or findInList(peripheral.getNames(), "minecraft:chest")
         or findInList(peripheral.getNames(), "actuallyadditions:giantchest")
 
-coffeeMakerName = tArgs[4]
+local coffeeMakerName = tArgs[4]
         or findInList(peripheral.getNames(), "actuallyadditions:coffeemachine")
-coffeeMaker = peripheral.wrap(coffeeMakerName)
+local coffeeMaker = peripheral.wrap(coffeeMakerName)
 
-thisTurtle = tArgs[5]
+local thisTurtle = tArgs[5]
         or findInList(playerChest.getTransferLocations(), "turtle")
 
-bDebug = tArgs[6] or false
+local bDebug = tArgs[6] or false
 
 local function checkForEmptyCup()
     local currentItem = playerChest.getItemMeta(coffeeSlot)
