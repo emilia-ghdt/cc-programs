@@ -77,6 +77,16 @@ local function refillCoffeeMaker()
             end
         end
     end
+
+    emptyCupsMeta = coffeeMaker.getItemMeta(2)
+    if not emptyCupsMeta or emptyCupsMeta.count < emptyCupsMeta.maxCount then
+        for i, item in pairs(bufferChest.list()) do
+            if item and item.name == "actuallyadditions:item_misc"
+                    and item.damage == 14 then
+                bufferChest.pushItems(coffeeMakerName, i, nil, 2)
+            end
+        end
+    end
 end
 
 local function checkTurtleForCoffee()
