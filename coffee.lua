@@ -65,7 +65,7 @@ local function checkTurtleForCoffee()
         local currentItem = turtle.getItemDetail(i)
         if currentItem ~= nil
           and currentItem.name == "actuallyadditions:item_coffee" then
-            if coffeeCount == nil then
+            if coffeeCount == 0 then
                 turtleCoffeeSlot = i
             end
             coffeeCount = coffeeCount + 1
