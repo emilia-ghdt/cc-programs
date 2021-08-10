@@ -1,5 +1,9 @@
 local tArgs = {...}
 
+if tArgs[7] == nil or tArgs[7] == "true" then
+    os.setComputerLabel("The Intern")
+end
+
 local function findInList(list, searchString)
     if searchString == nil then
         return nil
@@ -63,6 +67,17 @@ local function getCoffeeFromMaker()
     return false
 end
 
+local function refillCoffeeMaker()
+    beansMeta = coffeeMaker.getItemMeta(1)
+    if not beansMeta or beansMeta.count < beansMeta.maxCount then
+        for i, item in pairs(bufferChest.list()) do
+            if item and item.name == "actuallyadditions:item_coffee_beans" then
+                bufferChest.pushItems(coffeeMakerName, i, nil, 1)
+            end
+        end
+    end
+end
+
 local function checkTurtleForCoffee()
     local turtleCoffeeSlot = nil
     local coffeeCount = 0
@@ -83,7 +98,12 @@ turtle.select(1)
 
 while true do
     if bDebug then
-        print("Checking turtle inventory")
+        print("Refilling coffee maker...")
+    end
+    refillCoffeeMaker()
+
+    if bDebug then
+        print("Checking turtle inventory...")
     end
     local turtleCoffeeSlot, coffeeCount = checkTurtleForCoffee()
     if coffeeCount < 16 then
